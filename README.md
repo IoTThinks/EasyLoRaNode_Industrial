@@ -10,4 +10,5 @@ Hardware is at http://iotthinks.com/easy-lora-industrial-node/
 ![esp-wroom-32_3](https://user-images.githubusercontent.com/29994971/56800129-85996c00-6844-11e9-8acd-b30e1db9f772.jpg)
 
 ### 1.2 MCU ESP32
+Check the Referenced ESP32 pin numbers for correct GPIO numbers.
 ![05  ESP32](https://user-images.githubusercontent.com/29994971/56794473-64cb1980-6838-11e9-9061-f9f2b67ca565.png)
