@@ -12,3 +12,6 @@ Hardware is at http://iotthinks.com/easy-lora-industrial-node/
 ### 1.2 MCU ESP32
 Check the Referenced ESP32 pin numbers for correct GPIO numbers.
 ![05  ESP32](https://user-images.githubusercontent.com/29994971/56794473-64cb1980-6838-11e9-9061-f9f2b67ca565.png)
+
+### 1.3 LoRa
+![04  LoRa](https://user-images.githubusercontent.com/29994971/56802215-ad3f0300-6849-11e9-842c-af91e397631e.png)
