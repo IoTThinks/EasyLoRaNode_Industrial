@@ -15,3 +15,6 @@ Check the Referenced ESP32 pin numbers for correct GPIO numbers.
 
 ### 1.3 LoRa
 ![04  LoRa](https://user-images.githubusercontent.com/29994971/56802215-ad3f0300-6849-11e9-842c-af91e397631e.png)
+
+### 1.4 Pins for AC/DC input, RS485 sensor, commondity sensor and relay
+![06  Pinout](https://user-images.githubusercontent.com/29994971/56844082-b2955f80-68d4-11e9-9445-346e9f4cb510.png)
