@@ -5,10 +5,10 @@
 #define BAUD_RATE 9600
 
 // LED
-#define LED_STATUS1 14       
-#define LED_STATUS2 13
-#define LED_STATUS3 19
-#define LED_STATUS4 21
+#define LED1 14       
+#define LED2 13
+#define LED3 19
+#define LED4 21
 
 // Button
 #define BTN       34
@@ -33,6 +33,9 @@
 #define FREE_PIN1    2
 #define FREE_PIN2    4
 #define FREE_PIN3   26
+
+// GPIO1, Sensor
+int _sensorValue;
 
 // Modbus
 #define MODBUS_TXD  17

@@ -1,67 +1,74 @@
 // ====================================
 // LED
 // ====================================
-// LEDs are connected anode to +5, cathode to i/o pin. Aka: Active LOW.
-// So pin set to LOW will on the LED
+
 String LED_Status = "Not initalized";
 
 void setupLED() {
-  pinMode(LED_STATUS1, OUTPUT);    
-  digitalWrite(LED_STATUS1, LOW);  
+  digitalWrite(LED1, LOW);
+  pinMode(LED1, OUTPUT);    
 
-  pinMode(LED_STATUS2, OUTPUT);    
-  digitalWrite(LED_STATUS2, LOW);  
+  digitalWrite(LED2, LOW);
+  pinMode(LED2, OUTPUT);    
 
-  pinMode(LED_STATUS3, OUTPUT);    
-  digitalWrite(LED_STATUS3, LOW);  
+  digitalWrite(LED3, LOW);
+  pinMode(LED3, OUTPUT);    
 
-  pinMode(LED_STATUS4, OUTPUT);    
-  digitalWrite(LED_STATUS4, LOW);  
+  digitalWrite(LED4, LOW);
+  pinMode(LED4, OUTPUT);        
   
   LED_Status = "OK";
-  Serial.println("[LED_STATUS1]==> Setup LED");
+  Serial.println("[LED] Setup LED");
 }
 
 // LED 1
-void onLED_STATUS1() {
-  Serial.println("[LED]==> On LED_STATUS1");
-  digitalWrite(LED_STATUS1, HIGH);
+void onLED1() {
+  // Already ON, to skip
+  if(digitalRead(LED1) == HIGH)
+    return;
+  
+  Serial.println("[LED] On LED1");
+  digitalWrite(LED1, HIGH);
 }
 
-void offLED_STATUS1() {  
-  Serial.println("[LED]==> Off LED_STATUS1");
-  digitalWrite(LED_STATUS1, LOW);
+void offLED1() {  
+  // Already OFF, to skip
+  if(digitalRead(LED1) == LOW)
+    return;
+  
+  Serial.println("[LED] Off LED1");
+  digitalWrite(LED1, LOW);
 }
 
 // LED 2
-void onLED_STATUS2() {
-  Serial.println("[LED]==> On LED_STATUS2");
-  digitalWrite(LED_STATUS2, HIGH);
+void onLED2() {
+  Serial.println("[LED] On LED2");
+  digitalWrite(LED2, HIGH);
 }
 
-void offLED_STATUS2() {  
-  Serial.println("[LED]==> Off LED_STATUS2");
-  digitalWrite(LED_STATUS2, LOW);
+void offLED2() {  
+  Serial.println("[LED] Off LED2");
+  digitalWrite(LED2, LOW);
 }
 
 // LED 3
-void onLED_STATUS3() {
-  Serial.println("[LED]==> On LED_STATUS3");
-  digitalWrite(LED_STATUS3, HIGH);
+void onLED3() {
+  Serial.println("[LED] On LED3");
+  digitalWrite(LED3, HIGH);
 }
 
-void offLED_STATUS3() {  
-  Serial.println("[LED]==> Off LED_STATUS3");
-  digitalWrite(LED_STATUS3, LOW);
+void offLED3() {  
+  Serial.println("[LED] Off LED3");
+  digitalWrite(LED3, LOW);
 }
 
 // LED 4
-void onLED_STATUS4() {
-  Serial.println("[LED]==> On LED_STATUS4");
-  digitalWrite(LED_STATUS4, HIGH);
+void onLED4() {
+  Serial.println("[LED] On LED4");
+  digitalWrite(LED4, HIGH);
 }
 
-void offLED_STATUS4() {  
-  Serial.println("[LED]==> Off LED_STATUS4");
-  digitalWrite(LED_STATUS4, LOW);
+void offLED4() {  
+  Serial.println("[LED] Off LED4");
+  digitalWrite(LED4, LOW);
 }
