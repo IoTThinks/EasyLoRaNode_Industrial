@@ -72,3 +72,22 @@ void offLED4() {
   Serial.println("[LED] Off LED4");
   digitalWrite(LED4, LOW);
 }
+
+void blinkAllLEDs() {
+  onLED1();
+  delay(500);
+  onLED2();
+  delay(500);
+  onLED3();
+  delay(500);
+  onLED4();
+  delay(500);
+  offLED1();
+  delay(500);
+  offLED2();
+  delay(500);
+  offLED3();
+  delay(500);
+  offLED4();
+}
+

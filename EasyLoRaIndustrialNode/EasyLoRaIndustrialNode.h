@@ -38,8 +38,22 @@
 int _sensorValue;
 
 // Modbus
-#define MODBUS_TXD  17
+// Serial 1 but GPIO16 and 17
+#include "ModbusMaster.h"
+#include <HardwareSerial.h>
 #define MODBUS_RXD  16
+#define MODBUS_TXD  17
+#define MODBUS_REGISTERID 0x2010
+#define MODBUS_REGISTERWORD 1
+
+// instantiate ModbusMaster object
+ModbusMaster modbus;
+
+// Serial to connect to RS485 module
+HardwareSerial ModbusSerial(1);
+
+// Slave ID 1 for Modbus device
+#define Slave_ID 1
 
 // WiFi
 #include <WiFi.h>

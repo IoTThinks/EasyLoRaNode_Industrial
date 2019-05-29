@@ -73,6 +73,10 @@ String receiveLoRaMessage() {
 }
 
 void sendLoRaMessage(String outgoing) {
+  // If sending message from sensor is empty, ignore it.
+  if(outgoing == "")
+   return;
+   
   Serial.println("[LoRa]=> Sending packet: " + outgoing);
   LoRa.beginPacket();                   // start packet
   /*

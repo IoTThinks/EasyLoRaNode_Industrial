@@ -21,7 +21,11 @@ String getSensor() {
 
   String returnValue = "s:" + (String)_sensorValue;
   // Set alarm
-  if(_sensorValue > 500) {
+  if(_sensorValue > 1000) {
+    Serial.println("[SENSOR] Sensor may be not attached. Skip sending message.");
+    return "";
+  } 
+  else if(_sensorValue > 500) {
     onLED1();
     onActuator();
     returnValue = "[Gas detected]"+returnValue;
