@@ -4,7 +4,7 @@ Easy LoRa Industrial Node sends information from both industrial RS485 and commo
 * Homepage: http://iotthinks.com/easy-lora-industrial-node/
 * Full WiKi: https://github.com/IoTThinks/EasyLoRaNode_Industrial/wiki
 
-![image](https://user-images.githubusercontent.com/29994971/58601603-b6d9e180-82b3-11e9-9872-7becc462359d.png)
+![Easy_LoRa_Industrial_Node](https://user-images.githubusercontent.com/29994971/58628489-06e09480-8304-11e9-8c9a-fa5f50ff87cd.JPG)
 
 ## 1. Schematic
 ### 1.1 Referenced ESP32 pinout
