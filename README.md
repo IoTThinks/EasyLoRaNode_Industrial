@@ -1,9 +1,9 @@
-# Easy LoRa Industrial Node
+# Easy LoRa Industrial Node - Quick Start
 Easy LoRa Industrial Node: ESP32, LoRa SX1278 with GPIO and RS485 support.
+* Hardware is at http://iotthinks.com/easy-lora-industrial-node/
+* Full WiKi is at https://github.com/IoTThinks/EasyLoRaNode_Industrial/wiki
 
-Hardware is at http://iotthinks.com/easy-lora-industrial-node/
-
-![node 1 4](https://user-images.githubusercontent.com/29994971/56794650-c3909300-6838-11e9-8945-dcd3d56bb453.png)
+![image](https://user-images.githubusercontent.com/29994971/58601603-b6d9e180-82b3-11e9-9872-7becc462359d.png)
 
 ## 1. Schematic
 ### 1.1 Referenced ESP32 pinout
