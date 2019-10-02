@@ -2,25 +2,26 @@ void WiFiEvent(WiFiEvent_t event)
 {  
   switch(event) {
     case SYSTEM_EVENT_STA_GOT_IP:
-      Serial.print("[WiFi] WiFi connected. ");
-      Serial.print("IP address: ");
-      Serial.println(WiFi.localIP());
+      log("[WiFi] WiFi connected.");      
+      log("[WiFi] IP address: " + WiFi.localIP().toString());
+      log("[WiFi] MAC address: " + WiFi.macAddress());
       break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
-      Serial.println("[WiFi] WiFi lost connection.  Attempting to reconnect...");
+      log("[WiFi] WiFi lost connection.  Attempting to reconnect...");
       WiFi.reconnect();
       break;
     case SYSTEM_EVENT_STA_START:
-      Serial.println("[WiFi] WiFi station start");
+      log("[WiFi] WiFi station start");
       break;
     case SYSTEM_EVENT_STA_CONNECTED:
-      Serial.println("[WiFi] WiFi station connected to AP");
+      log("[WiFi] WiFi station connected to AP");
       break;
     case SYSTEM_EVENT_AP_START:
-      Serial.println("[WiFi] WiFi AP start");
+      log("[WiFi] WiFi AP start");
       break;
     default:      
-      Serial.printf("[WiFi] Unhandled WiFi Event %d\n", event);       
+      //Serial.printf("[WiFi] Unhandled WiFi Event %d\n", event);
+      log("[WiFi] Unhandled WiFi Event: " +String(event));
       break;
   }
 }
@@ -34,5 +35,5 @@ void setupWiFi()
     WiFi.onEvent(WiFiEvent);
 
     WiFi.begin(ssid, password);
-    Serial.println("[WiFi] Wait for WiFi...");
+    log("[WiFi] Wait for WiFi...");
 }

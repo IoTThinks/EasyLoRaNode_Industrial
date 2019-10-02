@@ -8,13 +8,13 @@ String LORA_Lastreceived_Msg ="--No data--";
 
 // Setup Lora
 void setupLoRa() {
-  Serial.println("[LoRa] Setting up LoRa");
+  log("[LoRa] Setting up LoRa");
   
   SPI.begin(LORA_SCK, LORA_MISO, LORA_MOSI, LORA_SS);
   LoRa.setPins(LORA_SS, LORA_RESET, LORA_DIO012);
   
-  while (!LoRa.begin(433E6)) {
-    Serial.println("[LoRa] Starting LoRa failed!");    
+  while (!LoRa.begin(LORA_FREQ)) {
+    log("[LoRa] Starting LoRa failed!");    
     LORA_Status="FAILED";
     delay(1000);
   }
@@ -23,6 +23,7 @@ void setupLoRa() {
   LoRa.setCodingRate4(LORA_CR); //4/5
   LoRa.setSignalBandwidth(LORA_BW);
   LoRa.setPreambleLength(LORA_PREAMBLE_LENGTH);
+  LoRa.enableCrc();
   
   LORA_Status = "OK";
 }
@@ -47,25 +48,25 @@ String receiveLoRaMessage() {
 
   /*
   if (incomingLength != incoming.length()) {   // check length for error
-    Serial.println("error: message length does not match length");
+    log("error: message length does not match length");
     return;                             // skip rest of function
   }
 
   // if the recipient isn't this device or broadcast,
   if (recipient != localAddress && recipient != 0xFF) {
-    Serial.println("This message is not for me.");
+    log("This message is not for me.");
     return;                             // skip rest of function
   }
 
   // if message is for this device, or broadcast, print details:   
-  Serial.println("Received from: 0x" + String(sender, HEX));
-  Serial.println("Sent to: 0x" + String(recipient, HEX));
-  Serial.println("Message ID: " + String(incomingMsgId));
-  Serial.println("Message length: " + String(incomingLength));
-  Serial.println("Message: " + incoming);  
-  Serial.println("RSSI: " + String(LoRa.packetRssi()));
-  Serial.println("Snr: " + String(LoRa.packetSnr()));
-  Serial.println();
+  log("Received from: 0x" + String(sender, HEX));
+  log("Sent to: 0x" + String(recipient, HEX));
+  log("Message ID: " + String(incomingMsgId));
+  log("Message length: " + String(incomingLength));
+  log("Message: " + incoming);  
+  log("RSSI: " + String(LoRa.packetRssi()));
+  log("Snr: " + String(LoRa.packetSnr()));
+  log();
   */
 
   LORA_Lastreceived_Msg = incoming;
@@ -76,8 +77,12 @@ void sendLoRaMessage(String outgoing) {
   // If sending message from sensor is empty, ignore it.
   if(outgoing == "")
    return;
-   
-  Serial.println("[LoRa]=> Sending packet: " + outgoing);
+
+  // Adding srcId
+  outgoing = "\"src\":" + String("\"") + getChipID() + String("\"") + String(",") + outgoing;
+  log("[LoRa]=> Sending packet: " + outgoing);
+
+  // Start sending
   LoRa.beginPacket();                   // start packet
   /*
   msgCount++;                           // increment message ID
@@ -86,6 +91,7 @@ void sendLoRaMessage(String outgoing) {
   LoRa.write(msgCount);                 // add message ID
   LoRa.write(outgoing.length());        // add payload length
   */
+  
   LoRa.print(outgoing);                 // add payload
   LoRa.endPacket();                     // finish packet and send it  
 }

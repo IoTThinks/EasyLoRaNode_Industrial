@@ -10,31 +10,24 @@ MQ-135 normal air output 130
       Breath2            140
 */
 
-void setupSensor() {
+void setupSensor() {  
   pinMode(FREE_PIN1, INPUT);
   Serial.println("[SENSOR] Setup sensor");
 }
 
 String getSensor() {  
+  // Set back to input mode
+  pinMode(FREE_PIN1, INPUT);
+  delay(100);
+
+  // Get sensor value
   _sensorValue = analogRead(FREE_PIN1);
   Serial.println("[SENSOR] Sensor value=" + (String)_sensorValue);
-
-  String returnValue = "s:" + (String)_sensorValue;
-  // Set alarm
-  if(_sensorValue > 1000) {
-    Serial.println("[SENSOR] Sensor may be not attached. Skip sending message.");
-    return "";
-  } 
-  else if(_sensorValue > 500) {
-    onLED1();
-    onActuator();
-    returnValue = "[Gas detected]"+returnValue;
-  }
-  else {
-    offLED1();
-    offActuator();
-  }   
-
-  return returnValue;
+  
+  // This is GPIO2
+  // Set to low for easy flashing
+  pinMode(FREE_PIN1, OUTPUT);
+  digitalWrite(FREE_PIN1, LOW);
+  
+  return (String)_sensorValue ;
 }
-

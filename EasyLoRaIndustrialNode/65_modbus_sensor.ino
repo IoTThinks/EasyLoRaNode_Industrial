@@ -1,18 +1,18 @@
 void setupModbus() {
-  // Modbus communication runs at 9600 baud
-  ModbusSerial.begin(9600, SERIAL_8N1, MODBUS_RXD, MODBUS_TXD);
+  // Modbus settings
+  ModbusSerial.begin(MODBUS_BAUDRATE, SERIAL_8N1, MODBUS_RXD, MODBUS_TXD);
   
   // Modbus slave ID 1
-  modbus.begin(Slave_ID, ModbusSerial);  
+  modbus.begin(MODBUS_SLAVEID, ModbusSerial);  
   modbus.idle(yield);
   
-  Serial.println("[MODBUS_SENSOR] Setup Modbus sensor");
+  log("[MODBUS_SENSOR] Setup Modbus sensor");
 }
 
 // Get Modbus message
 bool getResultMsg(ModbusMaster *node, uint8_t result) 
 { 
-  String tmpstr2 = "\r\n";
+  String tmpstr2 = "";
   switch (result) 
   {
     case node->ku8MBSuccess:
@@ -48,28 +48,35 @@ bool getResultMsg(ModbusMaster *node, uint8_t result)
   }
 
   // Print Modbus returned message
-  Serial.println("[MODBUS_SENSOR] Error message:" + tmpstr2);
+  log("[MODBUS_SENSOR] Error message: " + tmpstr2);
   return false;
 }
 
+// Suport multile words
+// Keep original value from Modbus and let the server handle the conversion
 String getModbusSensor() {
   Serial.println("[MODBUS_SENSOR] Gettting Modbus sensor");
   
   // Getting result from register id with number of words
   uint8_t result = modbus.readHoldingRegisters(MODBUS_REGISTERID, MODBUS_REGISTERWORD);
+  long finalResult = 0;
+  
   if (getResultMsg(&modbus, result)) 
   {
-    double res_dbl = modbus.getResponseBuffer(0) / 10.0;
-    String res = "[MODBUS_SENSOR] Modbus message: " + String(res_dbl);
-    Serial.println("[MODBUS_SENSOR] Modbus response message: " + String(res_dbl));
-    //res_dbl = modbus1.getResponseBuffer(1) / 10;
-    //res += "Humidity2: " + String(res_dbl) + " %";
-    
-    return "mbs:" + (String) res_dbl;
+    // Loop for multiple word
+    for (int i=0; i < MODBUS_REGISTERWORD; i++)
+    {
+      int wordItem = modbus.getResponseBuffer(i);
+      String resItem = "[MODBUS_SENSOR] Modbus response message: " + String(wordItem);
+      Serial.println(resItem);
+
+      // Shift value to left 16 bit
+      finalResult = finalResult << 16 | wordItem ;
+    }
+    return (String) finalResult;
   }
   else 
   {
-    return "mbs:error";
+    return "\"error\"";
   }   
 }
-

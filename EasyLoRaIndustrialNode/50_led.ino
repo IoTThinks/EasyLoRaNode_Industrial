@@ -18,7 +18,7 @@ void setupLED() {
   pinMode(LED4, OUTPUT);        
   
   LED_Status = "OK";
-  Serial.println("[LED] Setup LED");
+  log("[LED] Setup LED");
 }
 
 // LED 1
@@ -27,7 +27,7 @@ void onLED1() {
   if(digitalRead(LED1) == HIGH)
     return;
   
-  Serial.println("[LED] On LED1");
+  log("[LED] On LED1");
   digitalWrite(LED1, HIGH);
 }
 
@@ -36,40 +36,40 @@ void offLED1() {
   if(digitalRead(LED1) == LOW)
     return;
   
-  Serial.println("[LED] Off LED1");
+  log("[LED] Off LED1");
   digitalWrite(LED1, LOW);
 }
 
 // LED 2
 void onLED2() {
-  Serial.println("[LED] On LED2");
+  log("[LED] On LED2");
   digitalWrite(LED2, HIGH);
 }
 
 void offLED2() {  
-  Serial.println("[LED] Off LED2");
+  log("[LED] Off LED2");
   digitalWrite(LED2, LOW);
 }
 
 // LED 3
 void onLED3() {
-  Serial.println("[LED] On LED3");
+  log("[LED] On LED3");
   digitalWrite(LED3, HIGH);
 }
 
 void offLED3() {  
-  Serial.println("[LED] Off LED3");
+  log("[LED] Off LED3");
   digitalWrite(LED3, LOW);
 }
 
 // LED 4
 void onLED4() {
-  Serial.println("[LED] On LED4");
+  log("[LED] On LED4");
   digitalWrite(LED4, HIGH);
 }
 
 void offLED4() {  
-  Serial.println("[LED] Off LED4");
+  log("[LED] Off LED4");
   digitalWrite(LED4, LOW);
 }
 
@@ -90,4 +90,3 @@ void blinkAllLEDs() {
   delay(500);
   offLED4();
 }
-

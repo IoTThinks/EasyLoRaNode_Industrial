@@ -2,15 +2,17 @@
 
 void setup() {  
   setupSerial();
+  setupWiFi();
+  setupSerialBT();
+  printChipID();
   setupLED();  
-  //setupButton();
-  //setupWiFi();
-  delay(1000);
-  //setupOTA();
+  //setupButton();  
+      
   setupLoRa();
   setupSensor();  
   setupModbus();
   setupActuator();
+  //setupOTA();
   
   // Blink all leds
   blinkAllLEDs();
@@ -22,17 +24,15 @@ void loop() {
   delay(500);
   offLED1();
   delay(500);
-  
-  // Send message from commodity sensor
-  sendLoRaMessage(getSensor());  
-  delay(1000);
 
-  // Send message from modbus sensor
-  sendLoRaMessage(getModbusSensor());
+  // Get sensor data
+  String mb_temp = String("\"mb_temp\":") + getModbusSensor();
+  String s_smk = String("\"s_smk\":") + getSensor();  
   delay(2000);
-  
-  //String loraMsg = receiveLoRaMessage();
-  //Serial.println("Received LoRa Message: " + loraMsg);
+   
+  // Send sensor data to gateway
+  sendLoRaMessage(mb_temp + String(",") + s_smk);
+  delay(1000);
 
   //delay(500);
   //buttonPressed();
