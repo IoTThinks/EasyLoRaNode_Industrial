@@ -5,7 +5,8 @@ void setupSerial() {
   Serial.begin(BAUD_RATE);
 }
 
-void log(String message)
+// If Bluetooth client is connected, print debug log to BlueTooth and serial
+void log(const String& message)
 {
   Serial.println(message);
   if(isBTConnected)

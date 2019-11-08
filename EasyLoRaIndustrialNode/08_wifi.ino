@@ -35,5 +35,6 @@ void setupWiFi()
     WiFi.onEvent(WiFiEvent);
 
     WiFi.begin(ssid, password);
+    WiFi.setSleep(false); // Do not sleep
     log("[WiFi] Wait for WiFi...");
 }

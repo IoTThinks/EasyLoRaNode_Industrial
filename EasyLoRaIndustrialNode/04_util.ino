@@ -34,3 +34,10 @@ void printChipID()
 {
   log("[UTIL] Chip ID: " + getChipID());
 }
+
+// Get random number from 0 to range
+long getRandomNumber(int maxNum)
+{
+  randomSeed(analogRead(FREE_PIN3));
+  return random(maxNum);  
+}

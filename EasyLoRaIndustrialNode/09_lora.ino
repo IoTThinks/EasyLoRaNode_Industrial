@@ -78,8 +78,15 @@ void sendLoRaMessage(String outgoing) {
   if(outgoing == "")
    return;
 
-  // Adding srcId
-  outgoing = "\"src\":" + String("\"") + getChipID() + String("\"") + String(",") + outgoing;
+  // Adding DeviceID
+  // Format: "src":"DeviceID","temp":30,"humid":80
+  // Outgoing in format "temp":30,"humid":80
+  // outgoing = "\"src\":\"" + getChipID() + "\"," + outgoing;
+  outgoing = R"=====("src":")=====" +
+             getChipID() +
+             R"=====(",)=====" +
+             outgoing;
+    
   log("[LoRa]=> Sending packet: " + outgoing);
 
   // Start sending

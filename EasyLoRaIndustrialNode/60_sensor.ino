@@ -21,13 +21,21 @@ String getSensor() {
   delay(100);
 
   // Get sensor value
-  _sensorValue = analogRead(FREE_PIN1);
+  _sensorValue = analogRead(FREE_PIN1);   
   Serial.println("[SENSOR] Sensor value=" + (String)_sensorValue);
   
   // This is GPIO2
   // Set to low for easy flashing
   pinMode(FREE_PIN1, OUTPUT);
   digitalWrite(FREE_PIN1, LOW);
-  
-  return (String)_sensorValue ;
+
+  // Value 4095 is normally an error
+  if(_sensorValue == 4095)
+  {
+    return "\"error\""; 
+  }
+  else
+  {
+    return (String)_sensorValue;
+  }
 }
