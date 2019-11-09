@@ -1,4 +1,4 @@
-#include "EasyLoRaIndustrialNode.h"
+#include "EasyLoRa.h"
 
 void setup() {  
   setupSerial();
@@ -22,24 +22,21 @@ void loop() {
   // Check heap mem
   // log("esp_free_heap: " + String(esp_get_free_heap_size()) + 
   //    ", free_min_heap: " + String(esp_get_minimum_free_heap_size()));
-  
-  // Blink LED 1 for another loop
-  onLED1();
-  delay(500);
-  offLED1();
-  delay(500);
 
-  // Get sensor data
-  String mb_temp = R"=====("mb_temp":)=====" + getModbusSensor();
-  //String s_smk = R"=====("s_smk":)=====" + getSensor();
-  delay(2000);
-   
-  // Send sensor data to gateway
-  //sendLoRaMessage(mb_temp + String(",") + s_smk);
-  sendLoRaMessage(mb_temp);
-  delay(1000);
+  // Receive and process LoRa message
+  // To send back LoRa message if required
+  receiveAndProcessLoRaMessage();
 
-  //delay(500);
   //buttonPressed();
   //waitingForOTA();
+}
+
+void receiveAndProcessLoRaMessage()
+{
+  // For LoRa 1
+  String message = receiveLoRaMessage();
+  if(message != ""){   
+    log("[MAIN] => Received message: " + message);
+    processDownlinkMessage(message);
+  }
 }

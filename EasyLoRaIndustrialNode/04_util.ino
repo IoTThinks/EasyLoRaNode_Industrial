@@ -41,3 +41,48 @@ long getRandomNumber(int maxNum)
   randomSeed(analogRead(FREE_PIN3));
   return random(maxNum);  
 }
+
+// ====================================
+// JSON
+// ====================================
+// Print json to string for printing
+String jsonToString(StaticJsonDocument<200> doc)
+{
+  String output;
+  serializeJson(doc, output);
+  return output;
+}
+
+// Convert to Json Doc from string
+StaticJsonDocument<200> toJsonDoc(const String& jsonStr)
+{  
+  //log("[UTIL] Parsing json string=" + jsonStr);
+  
+  StaticJsonDocument<200> doc;
+  DeserializationError error = deserializeJson(doc, jsonStr);
+
+  // Test if parsing succeeds.
+  if (error) {
+    log("[UTIL] Json parse failed.");
+  }
+    
+  return doc;
+}
+
+// Get Json Attribute value
+String getJsonAttValue(StaticJsonDocument<200> doc, const String& attNameLevel1, const String& attNameLevel2, 
+                       const String& attNameLevel3)
+{
+  if(attNameLevel3 != "")
+    doc[attNameLevel1][attNameLevel2][attNameLevel2];
+  else if(attNameLevel2 != "")
+    return doc[attNameLevel1][attNameLevel2];
+  else
+    return doc[attNameLevel1];
+}
+
+String removeJsonAtt(StaticJsonDocument<200> doc, const String& attName)
+{
+  doc.remove(attName);
+  return jsonToString(doc);
+}

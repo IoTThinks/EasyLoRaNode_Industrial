@@ -32,14 +32,9 @@ String receiveLoRaMessage() {
   int packetSize = LoRa.parsePacket();
   if (packetSize == 0) return "";          // if there's no packet, return
 
-  // read packet header bytes:
-  /*
-  int recipient = LoRa.read();          // recipient address
-  byte sender = LoRa.read();            // sender address
-  byte incomingMsgId = LoRa.read();     // incoming msg ID
-  byte incomingLength = LoRa.read();    // incoming msg length
-  */
-  
+  // TO DO: To filter not matched dst here  
+
+  // To receive message
   String incoming = "";                 // payload of packet
 
   while (LoRa.available()) {            // can't use readString() in callback, so

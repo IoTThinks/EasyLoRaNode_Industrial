@@ -1,5 +1,7 @@
 void setupActuator() {
   log("[ACTUATOR] Setup Actuator");
+
+  // Pin P2
   digitalWrite(FREE_PIN2, LOW);
   pinMode(FREE_PIN2, OUTPUT);  
 }
