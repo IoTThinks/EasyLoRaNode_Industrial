@@ -25,6 +25,6 @@ void serialBTCallback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
 void setupSerialBT() {
   // Bluetooth device name
   SerialBT.register_callback(serialBTCallback);
-  SerialBT.begin("ENI-" + getChipID());
+  SerialBT.begin(SYS_HostName);
   log("[SerialBT] SerialBT starts OK. To pair with bluetooth for debug log.");  
 }

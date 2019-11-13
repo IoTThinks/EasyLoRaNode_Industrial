@@ -70,11 +70,20 @@ bool isBTConnected = false;
 #include <ArduinoOTA.h>
 
 // =====================
-// Utils
+// Utils - System
 // =====================
 #include <ArduinoJson.h>
-struct EasyJsonPacket {
-  String src; // Source device
-  String dst; // Destination device
-  String payload;  // "attribute1":"value1", "attribute2": value2
-};
+char SYS_ChipID[15];
+char SYS_HostName[20];
+
+// =====================
+// Cron jobs
+// =====================
+#define CRONJOB_PRIORITY_LORA 25
+#define CRONJOB_PRIORITY_UPDATESENSOR 0 // Idle
+unsigned long CRONJOB_START_MILLIS = 0;
+unsigned long CRONJOB_CURRENT_MILLIS;
+const unsigned long CRONJOB_PERIOD = 5000; // miliseconds
+
+// To store internal updated sensor data
+String CRONJOB_SENSOR_DATA((char *)0);

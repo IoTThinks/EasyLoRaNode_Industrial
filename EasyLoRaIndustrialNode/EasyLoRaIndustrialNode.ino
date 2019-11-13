@@ -4,7 +4,7 @@ void setup() {
   setupSerial();
   //setupWiFi();
   setupSerialBT();
-  printChipID();
+  setChipID();
   setupLED();  
   //setupButton();  
       
@@ -16,27 +16,41 @@ void setup() {
   
   // Blink all leds
   blinkAllLEDs();
+
+  // Create background cron job task
+  // xTaskCreatePinnedToCore(cronjobTask, "cronjobTask", 1024, NULL, tskIDLE_PRIORITY, NULL, 1);
+  xTaskCreate(cronjobTask, "cronjobTask", 10240, NULL, CRONJOB_PRIORITY_UPDATESENSOR, NULL);
 }
 
 void loop() { 
   // Check heap mem
-  // log("esp_free_heap: " + String(esp_get_free_heap_size()) + 
-  //    ", free_min_heap: " + String(esp_get_minimum_free_heap_size()));
+  logHeap();
 
-  // Receive and process LoRa message
-  // To send back LoRa message if required
-  receiveAndProcessLoRaMessage();
+  // Received LoRa message is processed in callback
 
-  //buttonPressed();
-  //waitingForOTA();
+  // Not in use
+  // buttonPressed();
+  // waitingForOTA();
+  
+  // Delay a bit for watch dog
+  vTaskDelay(1);
 }
 
-void receiveAndProcessLoRaMessage()
+void cronjobTask(void* pvParameters) {
+  while(true)
+  {
+    runCronJobs();
+    vTaskDelay(100);
+  }
+}
+
+void runCronJobs()
 {
-  // For LoRa 1
-  String message = receiveLoRaMessage();
-  if(message != ""){   
-    log("[MAIN] => Received message: " + message);
-    processDownlinkMessage(message);
+  CRONJOB_CURRENT_MILLIS = millis();
+  if (CRONJOB_CURRENT_MILLIS - CRONJOB_START_MILLIS >= CRONJOB_PERIOD)
+  {
+    log("[MAIN] Updating internal sensor data...");
+    updateInternalSensorData();
+    CRONJOB_START_MILLIS = CRONJOB_CURRENT_MILLIS;
   }
 }

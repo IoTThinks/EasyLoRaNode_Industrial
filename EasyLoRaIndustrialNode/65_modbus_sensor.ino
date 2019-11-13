@@ -48,7 +48,7 @@ bool getResultMsg(ModbusMaster *node, uint8_t result)
   }
 
   // Print Modbus returned message
-  log("[MODBUS_SENSOR] Error message: " + tmpstr2);
+  log("[MODBUS_SENSOR] Error message: ", string2Char(tmpstr2));
   return false;
 }
 

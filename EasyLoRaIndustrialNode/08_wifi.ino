@@ -3,8 +3,8 @@ void WiFiEvent(WiFiEvent_t event)
   switch(event) {
     case SYSTEM_EVENT_STA_GOT_IP:
       log("[WiFi] WiFi connected.");      
-      log("[WiFi] IP address: " + WiFi.localIP().toString());
-      log("[WiFi] MAC address: " + WiFi.macAddress());
+      log("[WiFi] IP address: ", WiFi.localIP().toString());
+      log("[WiFi] MAC address: ", WiFi.macAddress());
       break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
       log("[WiFi] WiFi lost connection.  Attempting to reconnect...");
@@ -21,7 +21,7 @@ void WiFiEvent(WiFiEvent_t event)
       break;
     default:      
       //Serial.printf("[WiFi] Unhandled WiFi Event %d\n", event);
-      log("[WiFi] Unhandled WiFi Event: " +String(event));
+      log("[WiFi] Unhandled WiFi Event: ", String(event));
       break;
   }
 }

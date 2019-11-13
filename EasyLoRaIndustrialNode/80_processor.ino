@@ -1,11 +1,16 @@
 // Should be in a another thread
 // Format from gateway to node: "dst":"BCDDC2C31684","id":307,"method":"setP1","params":"false"
 // Only process those with dst = ChipID
-void processDownlinkMessage(String message)
+void processDownlinkMessage(const char* message)
 {
-  // Parse message
-  // Added { } to be a json 
-  StaticJsonDocument<200> doc = toJsonDoc("{" + message + "}");
+  // Added { } to be a json
+  char parsingMessage[128];
+  strcpy(parsingMessage, "{");
+  strcat(parsingMessage, message);
+  strcat(parsingMessage, "}");
+  
+  // Parse message  
+  StaticJsonDocument<200> doc = toJsonDoc(parsingMessage);
   if(doc.isNull())
   {
     log("[PROCESSOR] Invalid MQTT Format. Skip processing message.");
@@ -14,26 +19,26 @@ void processDownlinkMessage(String message)
 
   // Parse json
   String dst = getJsonAttValue(doc, "dst", "", "");
-  if(dst != getChipID())
+
+  if(dst != SYS_ChipID)
   {
     // Ignore messages of other nodes
-    log("[PROCESSOR] Ignore message with dst = " + dst);
+    log("[PROCESSOR] Ignore message with dst: ", string2Char(dst));
     return;
   }
   else
   {
-    log("[PROCESSOR] Correct destination. To process packet with dst = " + dst);
+    log("[PROCESSOR] Correct destination. To process packet with dst: ", string2Char(dst));
   }
-    
+  
   // Parse the rest  
   String request_id = getJsonAttValue(doc, "id", "", "");
   String methodName = getJsonAttValue(doc, "method", "", "");
   String params = getJsonAttValue(doc, "params", "", "");
-
-  log("[PROCESSOR] dst = " + dst);
-  log("[PROCESSOR] request_id = " + request_id);
-  log("[PROCESSOR] methodName = " + methodName);
-  log("[PROCESSOR] params = " + params);
+  // log("[PROCESSOR] dst = ", string2Char(dst));
+  // log("[PROCESSOR] request_id = ", string2Char(request_id));
+  // log("[PROCESSOR] methodName = ", string2Char(methodName));
+  // log("[PROCESSOR] params = ", string2Char(params));
   
   // TODO: To handle all cases
   // To process downlink messages
@@ -50,17 +55,23 @@ void processDownlinkMessage(String message)
     }
     
     // To send response back
-    String responseMessage = createUplinkMessage(request_id, "att", "\"p2\":" + params);
+    // logHeap();
+    char* responseMessage = createUplinkMessage(request_id, "att", "\"p2\":" + params);
     sendLoRaMessage(responseMessage);
+    free(responseMessage);
+    // logHeap();
   }
   else if(methodName == "poll")
   {
     // "dst":"BCDDC2C31684","id":27,"method":"poll","params":"tmt"
     if(params == "tmt")
     {
-      // Send sensor data back as telemetry data
-     String responseMessage = createUplinkMessage(request_id, "tmt", getNodeTelemetryData());
-     sendLoRaMessage(responseMessage);      
+      // Send internal sensor data back as telemetry data
+      // logHeap();
+      char* responseMessage = createUplinkMessage(request_id, "tmt", CRONJOB_SENSOR_DATA);
+      sendLoRaMessage(responseMessage);  
+      free(responseMessage); 
+      // logHeap();   
     }
     else
     {
@@ -78,23 +89,27 @@ void processDownlinkMessage(String message)
 // RPC response: "src":"Device C","id":251, act:"rpc", "data":{"success": true}
 // Attribute response: "src":"Device C","id":251, "act":"att", "data":{"p1":"true","p2":"false"}
 // Telemetry response: "src":"Device C","id":251, "act":"tmt", "data":{"temp":301,"humid":90}
-String createUplinkMessage(String id, String act, String data)
+char* createUplinkMessage(const String& id, const String& act, const String& data)
 {
-  String returnStr((char *)0);
-  returnStr.reserve(128);
-  returnStr += R"=====("id":)=====";
-  returnStr += id;
-  returnStr += R"=====(,"act":")=====";
-  returnStr += act;
-  returnStr += R"=====(","data":{)=====";
-  returnStr += data;
-  returnStr += "}";
+  char *returnStr = (char *) malloc (128);
+  strcpy(returnStr, R"=====("id":)=====");
+  strcat(returnStr, string2Char(id));
+  strcat(returnStr, R"=====(,"act":")=====");
+  strcat(returnStr, string2Char(act));
+  strcat(returnStr, R"=====(","data":{)=====");
+  strcat(returnStr, string2Char(data));
+  strcat(returnStr, "}");
   return returnStr;
 }
 
+// TODO: TO optimize to char*
 // Get sensor data as telemetry data
-String getNodeTelemetryData()
+void updateInternalSensorData()
 {
-  String mb_temp = String("\"mb_temp\":") + getModbusSensor();
-  return mb_temp;
+  // Reserved global string is free from heap fragmentation
+  CRONJOB_SENSOR_DATA.reserve(128);
+  CRONJOB_SENSOR_DATA = "\"mb_temp\":";
+  CRONJOB_SENSOR_DATA += getModbusSensor();
+
+  log("[PROCESSOR] Sensor data: ", string2Char(CRONJOB_SENSOR_DATA));
 }
