@@ -4,15 +4,23 @@
 // To save preferences to flash (without SD card)
 // https://github.com/espressif/arduino-esp32/blob/master/libraries/Preferences/examples/StartCounter/StartCounter.ino
 
-void setupPreferences() {
+void setupPreference() {
   // Read-Write mode: set second parameter to false 
-  // Note: Namespace name is limited to 15 chars */
-  preferences.begin("easylora", false);
+  // Note: Namespace name is limited to 15 chars
+  // Open Preferences in on-demand get/set only?
 }
 
-void setPrefs(const char* key, const char* value)
+void beginPreference(bool isReadonly)
 {
-  String savedPrefs = getPrefs(key);
+  preferences.begin("easylora", isReadonly);
+}
+
+void setPreference(const char* key, const char* value)
+{
+  // Open Preferences in Read-Write mode
+  beginPreference(false);
+  
+  String savedPrefs = preferences.getString(key, "");
 
   // If not exist saved value 
   // or saved value and to-save value is different
@@ -24,18 +32,28 @@ void setPrefs(const char* key, const char* value)
   }
   else
   {
-    log("[Prefs] Skip saving same preference. Key : ", key, " , value: ", value);
+    log("[Prefs] Skip saving same preference value. Key : ", key, " , value: ", value);
   }
+  
+  // Close Preferences
+  closePreference();
 }
 
-String getPrefs(const char* key)
+String getPreference(const char* key)
 {
-  return preferences.getString(key, "");
+  // Open Preferences in readonly mode
+  beginPreference(true);
+  String savedPrefs = preferences.getString(key, "");
+
+  // Close Preferences
+  closePreference();
+  return savedPrefs;
 }
 
 // Close the Preferences
-void closePreferences()
+void closePreference()
 {
-  // When we need to close the preference?
+  // To close after every set and get preference?
+  // TODO: Is this thread-safe?
   preferences.end();  
 }

@@ -6,7 +6,7 @@ void setup() {
   setChipID();
   setNetworkID();
   setupSerialBT();
-  setupPreferences();
+  setupPreference();
   setupLED();  
   //setupButton();  
       
