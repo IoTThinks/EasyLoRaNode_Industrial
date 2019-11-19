@@ -27,7 +27,7 @@ void setChipID()
 }
 
 // To get chip ID, ESP32 will return last 3 octets of mac address
-String getShortChipID()
+void setNetworkID()
 {  
   // Get default mac address
   uint8_t chipid[6];
@@ -35,9 +35,8 @@ String getShortChipID()
 
   // Format into uppercase mac address without :
   // Eg: BCDDC2C31684
-  char returnStr[9];
-  snprintf(returnStr, 9, "%02X%02X%02X", chipid[3], chipid[4], chipid[5]);
-  return returnStr;
+  SYS_NetworkID = chipid[5];
+  log("[UTILS] Network ID: ", string2Char(String(SYS_NetworkID)));
 }
 
 void printChipID()

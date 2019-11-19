@@ -3,8 +3,9 @@
 void setup() {  
   setupSerial();
   //setupWiFi();
-  setupSerialBT();
   setChipID();
+  setNetworkID();
+  setupSerialBT();  
   setupLED();  
   //setupButton();  
       
@@ -18,13 +19,13 @@ void setup() {
   blinkAllLEDs();
 
   // Create background cron job task
-  // xTaskCreatePinnedToCore(cronjobTask, "cronjobTask", 1024, NULL, tskIDLE_PRIORITY, NULL, 1);
-  xTaskCreate(cronjobTask, "cronjobTask", 10240, NULL, CRONJOB_PRIORITY_UPDATESENSOR, NULL);
+  // Let it to run in core 0 for not realtime tasks
+  xTaskCreatePinnedToCore(cronjobTask, "cronjobTask", 1024, NULL, CRONJOB_PRIORITY_UPDATESENSOR, NULL, 0);
 }
 
 void loop() { 
   // Check heap mem
-  logHeap();
+  // logHeap();
 
   // Received LoRa message is processed in callback
 
@@ -33,14 +34,14 @@ void loop() {
   // waitingForOTA();
   
   // Delay a bit for watch dog
-  vTaskDelay(1);
+  // vTaskDelay(1);
 }
 
 void cronjobTask(void* pvParameters) {
   while(true)
   {
     runCronJobs();
-    vTaskDelay(100);
+    vTaskDelay(100); // Can tolerate delay
   }
 }
 

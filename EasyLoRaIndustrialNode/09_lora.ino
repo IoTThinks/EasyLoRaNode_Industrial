@@ -11,8 +11,11 @@ void setupLoRa() {
   
   SPI.begin(LORA_SCK, LORA_MISO, LORA_MOSI, LORA_SS);
   LoRa.setPins(LORA_SS, LORA_RESET, LORA_DIO012);
+
+  // Set customed RX Channel information
+  setRXChannel();
   
-  while (!LoRa.begin(LORA_FREQ)) {
+  while (!LoRa.begin(LORA_FREQ_BASE)) {
     log("[LoRa] Starting LoRa failed!");    
     LORA_Status="FAILED";
     delay(1000);
@@ -24,14 +27,45 @@ void setupLoRa() {
   LoRa.setPreambleLength(LORA_PREAMBLE_LENGTH);
   LoRa.enableCrc();
 
-  LoRa.onReceive(onLoRa1ReceiveCallback);
-  LoRa.receive();
+  // Set continuous receive  
+  LoRa.onReceive(onLoRa1ReceiveCallback);  
+  LoRa_rxMode();
   
   LORA_Status = "OK";
 }
 
+// Divide Network ID to max number of channels to find RX Channel
+void setRXChannel()
+{
+  // Set the RX channel
+  int currentRXChannel = SYS_NetworkID % LORA_FREQ_NUM_CHANNELS + 1;
+
+  // Set RX frequency
+  LORA_FREQ_RX = LORA_FREQ_BASE + currentRXChannel * LORA_FREQ_STEPS;
+
+  log("[LoRa] Current RX Channel: ", string2Char(String(currentRXChannel)),
+      ", LORA_FREQ_RX: ", string2Char(String(LORA_FREQ_RX)));
+}
+
+void LoRa_rxMode(){
+  log("[LoRa] Set RX mode");
+  LoRa.enableInvertIQ();                // active invert I and Q signals
+  LoRa.setFrequency(LORA_FREQ_RX);      // receive at custom frequency
+  LoRa.receive();                       // set receive mode
+}
+
+void LoRa_txMode(){
+  log("[LoRa] Set TX mode");
+  LoRa.idle();                          // set standby mode
+  LoRa.setFrequency(LORA_FREQ_BASE);    // send at base frequency
+  LoRa.disableInvertIQ();               // normal mode
+}
+
 // To send a single LoRa message
 void sendLoRaMessage(const char* outgoing) {
+  // Check heap mem
+  logHeap();
+  
   // If sending message from sensor is empty, ignore it.
   if(strlen(outgoing) == 0)
    return;
@@ -47,12 +81,13 @@ void sendLoRaMessage(const char* outgoing) {
     
   // Start sending
   log("[LoRa]=> Sending packet: ", loRaMessage);
+  LoRa_txMode();                        // set tx mode
   LoRa.beginPacket();                   // start packet  
-  LoRa.print(loRaMessage);                 // add payload
+  LoRa.print(loRaMessage);              // add payload
   LoRa.endPacket();                     // finish packet and send it
 
   // Set back to receive mode
-  LoRa.receive();
+  LoRa_rxMode();                        // set rx mode
 }
 
 // Continuous LoRa receive
@@ -61,11 +96,12 @@ void loRa1ReadTask(void* pvParameters) {
   int packetSize = *((int*)pvParameters);
   
   // To receive message using char* to avoid heap fragmentation
-  char incoming[128];
+  char incoming[256];
   
   for (int i = 0; i < packetSize; i++) {
     incoming[i] = (char)LoRa.read();
   }
+
   // To terminate the string
   incoming[packetSize] = '\0';
   
@@ -80,6 +116,7 @@ void loRa1ReadTask(void* pvParameters) {
 // Call back to receive LoRa messages
 void onLoRa1ReceiveCallback(int packetSize) {
   // Create a background task to process receive LoRa message
-  // xTaskCreatePinnedToCore(loRa1ReadTask, "loRa1ReadTask", 10240, (void*)&packetSize, tskIDLE_PRIORITY, NULL, 1);  
-  xTaskCreate(loRa1ReadTask, "loRa1ReadTask", 10240, (void*)&packetSize, CRONJOB_PRIORITY_LORA, NULL);  
+  // Let it to run in core 0 for not realtime tasks
+  xTaskCreatePinnedToCore(loRa1ReadTask, "loRa1ReadTask", 10240, (void*)&packetSize, 
+    CRONJOB_PRIORITY_READLORA, NULL, 0);
 }

@@ -26,5 +26,6 @@ void setupSerialBT() {
   // Bluetooth device name
   SerialBT.register_callback(serialBTCallback);
   SerialBT.begin(SYS_HostName);
+  esp_bt_mem_release(ESP_BT_MODE_BLE);
   log("[SerialBT] SerialBT starts OK. To pair with bluetooth for debug log.");  
 }

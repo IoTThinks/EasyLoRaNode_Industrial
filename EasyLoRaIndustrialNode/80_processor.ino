@@ -3,6 +3,8 @@
 // Only process those with dst = ChipID
 void processDownlinkMessage(const char* message)
 {
+  long startMillis =millis();
+  
   // Added { } to be a json
   char parsingMessage[128];
   strcpy(parsingMessage, "{");
@@ -18,6 +20,7 @@ void processDownlinkMessage(const char* message)
   }
 
   // Parse json
+  // TODO: To convert to char* for faster speed and lower heap fragmentation
   String dst = getJsonAttValue(doc, "dst", "", "");
 
   if(dst != SYS_ChipID)
@@ -82,6 +85,9 @@ void processDownlinkMessage(const char* message)
   {
     log("[Processor] Unhandled downlink message");
   }
+
+  long endMillis = millis();
+  Serial.println("processDownlinkMessage, take millis: " + String(endMillis - startMillis));
 }
 
 // To create uplink message to gateway
@@ -108,8 +114,7 @@ void updateInternalSensorData()
 {
   // Reserved global string is free from heap fragmentation
   CRONJOB_SENSOR_DATA.reserve(128);
-  CRONJOB_SENSOR_DATA = "\"mb_temp\":";
-  CRONJOB_SENSOR_DATA += getModbusSensor();
-
+  CRONJOB_SENSOR_DATA = "\"mb_temp\":" + getModbusSensor();
+  // CRONJOB_SENSOR_DATA = "\"mb_temp\":0";
   log("[PROCESSOR] Sensor data: ", string2Char(CRONJOB_SENSOR_DATA));
 }
