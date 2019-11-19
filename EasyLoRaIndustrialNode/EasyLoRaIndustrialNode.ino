@@ -5,7 +5,8 @@ void setup() {
   //setupWiFi();
   setChipID();
   setNetworkID();
-  setupSerialBT();  
+  setupSerialBT();
+  setupPreferences();
   setupLED();  
   //setupButton();  
       

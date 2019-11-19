@@ -4,6 +4,13 @@
 // Serial
 #define BAUD_RATE 115200 //9600
 
+// =====================
+// Preferences
+// =====================
+#include <Preferences.h>
+/* create an instance of Preferences library */
+Preferences preferences;
+
 // LED
 #define LED1 14       
 #define LED2 13
